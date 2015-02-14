@@ -66,38 +66,40 @@ int dev_close(struct inode *inode,struct file *filp)
 
 ssize_t dev_read(struct file *fp,char *buff,ssize_t length,loff_t *pos)
 {
-	if(debug)
-	{
-		printk("\nread starts\n");
-		printk("\nlength: %ld  *pos= %ld\n",length,*pos);
-	}
-	printk("\nret %ld\n",copy_to_user(buff,q,max));
-	q+=max;
-	*pos+=max;
-	if(debug)
-		printk("\nread ends\n");
-	if(ptr-=max)
-		return max;
-	else 
-		return 0;
+	 if(debug)
+        {
+                printk("\nread starts\n");
+                printk("\nlength: %ld  *pos= %ld\n",length,*pos);
+        }
+        if(ptr<=0)
+        return 0;
+        printk("\nret %ld\n",copy_to_user(buff,q,max));
+        q+=max;
+        *pos+=max;
+        if(debug)
+                printk("\nread ends\n");
+        if(ptr-=max)
+                return max;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 ssize_t dev_write(struct file *filp,const char *buff,size_t length,loff_t *pos)
 {
-	if(debug)
-	{
-		printk("\nwrite starts\n");
-		printk("\nlength: %ld  *pos= %ld\n",length,*pos);
-	}
-	printk("\nret  %ld\n",copy_from_user(p, buff, max));
-	p+=max;
-	*pos+=max;
-	if(debug)
-		printk("\nwrite ends\n");
-	ptr+=max;
-	return max;
+if(debug)
+        {
+                printk("\nwrite starts\n");
+                printk("\nlength: %ld  *pos= %ld\n",length,*pos);
+        }
+        if(length>max)
+        length=max;
+        printk("\nret  %ld\n",copy_from_user(p, buff, length));
+        p+=length;
+        *pos+=length;
+        if(debug)
+                printk("\nwrite ends\n");
+        ptr+=length;
+        return length;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
